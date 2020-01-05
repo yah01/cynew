@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 )
 
 type Config struct {
@@ -25,6 +26,7 @@ var (
 	help   bool
 	list   bool
 	create bool
+	open bool
 	temp   string
 	suffix string
 	add    string
@@ -45,6 +47,7 @@ func init() {
 	flag.BoolVar(&help, "h", false, "show help information")
 	flag.BoolVar(&list, "ls", false, "list all template(s)")
 	flag.BoolVar(&create, "c", false, "create file(s) without template")
+	flag.BoolVar(&open,"o",false,"open with OS default program")
 	flag.StringVar(&temp, "t", config.DefaultTemp, "set default template")
 	flag.StringVar(&suffix, "s", config.DefaultSuffix, "set default suffix")
 	flag.StringVar(&add, "a", "", "add *filename* into templates")
@@ -62,6 +65,10 @@ func trimSuffixName(suf string) string {
 	}
 
 	return string(name)
+}
+
+func hasSuffixName(suf string) bool {
+	return suf != trimSuffixName(suf)
 }
 
 func flagProcess() {
@@ -82,7 +89,7 @@ func flagProcess() {
 
 	config.DefaultTemp = temp
 	if config.DefaultSuffix != suffix {
-		config.DefaultSuffix = "."+suffix
+		config.DefaultSuffix = "." + suffix
 	}
 
 	if add != "" {
@@ -104,25 +111,43 @@ func flagProcess() {
 
 func main() {
 	flagProcess()
-
 	if flag.NArg() == 1 {
 		create = true
 	}
 
 	if create == true {
 		for _, name := range flag.Args() {
-			ioutil.WriteFile(workDir+"/"+name+config.DefaultSuffix, nil, Perm)
+			if !hasSuffixName(name) {
+				name += config.DefaultSuffix
+			}
+
+			ioutil.WriteFile(workDir+"/"+name, nil, Perm)
+
+			if open {
+				cmd :=exec.Command("cmd","/k","start",workDir+"/"+name)
+				cmd.Start()
+			}
 		}
 	} else if flag.NArg() > 0 {
 		tempName := flag.Arg(flag.NArg() - 1)
 		file, err := ioutil.ReadFile(tempDir + "/" + tempName)
 
 		if err != nil {
+			fmt.Println(flag.Args())
 			fmt.Println("No such templates:", tempName)
 		} else {
 			for i := 0; i < flag.NArg()-1; i++ {
 				name := flag.Arg(i)
-				ioutil.WriteFile(workDir+"/"+name+config.DefaultSuffix, file, Perm)
+				if !hasSuffixName(name) {
+					name+=config.DefaultSuffix
+				}
+
+				ioutil.WriteFile(workDir+"/"+name, file, Perm)
+
+				if open {
+					cmd :=exec.Command("cmd","/k","start",workDir+"/"+name)
+					cmd.Start()
+				}
 			}
 		}
 	}

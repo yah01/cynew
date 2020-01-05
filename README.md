@@ -32,3 +32,4 @@ I highly recommend that you add the directory of cynew into environment variable
 - [-s *suf*]: set default suffix to *.suf*
 - [-a *filename*]: add *filename* into templates
 - [-i *temp*]: show information of *temp*
+- [-o]: open with OS default program
