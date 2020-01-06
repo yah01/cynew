@@ -1,8 +1,16 @@
 # cynew
 
+## Build
+
+1. Install [Go](https://golang.org/)
+2. Change directory to where cynew exists
+3. Run command
+> go build
+4. There will be a executable file.
+
 ## Usage
 
-I highly recommend that you add the directory of cynew into environment variable **Path** such that you could run it anywhere.
+I highly recommend that adding the directory of cynew into environment variable **Path** such that you could run it anywhere.
 
 ### simply create a new file named *hello.cpp*
 > cynew *hello.cpp*
