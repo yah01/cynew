@@ -14,7 +14,7 @@ I highly recommend that you add the directory of cynew into environment variable
 > cynew *file1* *file2* ... *temp*
 
 ### create more files *file1,file2,...* without any template
-> cynew -c*file1* *file2* ...
+> cynew -c *file1* *file2* ...
 
 ### set the default template to *temp*
 > cynew -t *temp*
