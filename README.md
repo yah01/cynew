@@ -14,7 +14,7 @@ I highly recommend that you add the directory of cynew into environment variable
 > cynew *file1* *file2* ... *temp*
 
 ### create more files *file1,file2,...* without any template
-> cynew *file1* *file2* ... -c
+> cynew -c*file1* *file2* ...
 
 ### set the default template to *temp*
 > cynew -t *temp*
@@ -26,6 +26,9 @@ I highly recommend that you add the directory of cynew into environment variable
 > cynew -ls
 
 ## flag
+
+**All flags should be before another parameters**
+
 - [-ls]: list all template(s)
 - [-c]: create file(s) without template
 - [-t *temp*]: set default template to *temp*
