@@ -38,8 +38,6 @@ I highly recommend that adding the directory of cynew into environment variable 
 
 ## flag
 
-**All flags should be before another parameters**
-
 - [-ls]: list all template(s)
 - [-c]: create file(s) without template
 - [-t *temp*]: set default template to *temp*
