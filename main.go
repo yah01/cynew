@@ -1,8 +1,8 @@
 package main
 
 import (
+	"cyFlag"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -26,7 +26,7 @@ var (
 	help   bool
 	list   bool
 	create bool
-	open bool
+	open   bool
 	temp   string
 	suffix string
 	add    string
@@ -44,14 +44,14 @@ func init() {
 	configFile, _ := ioutil.ReadFile(configPath)
 	json.Unmarshal(configFile, &config)
 
-	flag.BoolVar(&help, "h", false, "show help information")
-	flag.BoolVar(&list, "ls", false, "list all template(s)")
-	flag.BoolVar(&create, "c", false, "create file(s) without template")
-	flag.BoolVar(&open,"o",false,"open with OS default program")
-	flag.StringVar(&temp, "t", config.DefaultTemp, "set default template")
-	flag.StringVar(&suffix, "s", config.DefaultSuffix, "set default suffix")
-	flag.StringVar(&add, "a", "", "add *filename* into templates")
-	flag.StringVar(&info, "i", "", "show information of *temp*")
+	cyFlag.BoolVar(&help, "-h", false, "show help information")
+	cyFlag.BoolVar(&list, "-ls", false, "list all template(s)")
+	cyFlag.BoolVar(&create, "-c", false, "create file(s) without template")
+	cyFlag.BoolVar(&open, "-o", false, "open with OS default program")
+	cyFlag.StringVar(&temp, "-t", config.DefaultTemp, "set default template")
+	cyFlag.StringVar(&suffix, "-s", config.DefaultSuffix, "set default suffix")
+	cyFlag.StringVar(&add, "-a", "", "add *filename* into templates")
+	cyFlag.StringVar(&info, "-i", "", "show information of *temp*")
 }
 
 func trimSuffixName(suf string) string {
@@ -72,10 +72,14 @@ func hasSuffixName(suf string) bool {
 }
 
 func flagProcess() {
-	flag.Parse()
+	err := cyFlag.Parse()
+
+	if err != nil {
+		cyFlag.Usage()
+	}
 
 	if help == true {
-		flag.Usage()
+		cyFlag.Usage()
 	}
 
 	if list == true {
@@ -88,7 +92,9 @@ func flagProcess() {
 	}
 
 	config.DefaultTemp = temp
-	if config.DefaultSuffix != suffix {
+	if suffix == "none" {
+		config.DefaultSuffix = ""
+	} else if config.DefaultSuffix != suffix {
 		config.DefaultSuffix = "." + suffix
 	}
 
@@ -111,12 +117,16 @@ func flagProcess() {
 
 func main() {
 	flagProcess()
-	if flag.NArg() == 1 {
+
+	// fmt.Println(create)
+	// fmt.Println(cyFlag.Args)
+
+	if len(cyFlag.Args) == 1 {
 		create = true
 	}
 
 	if create == true {
-		for _, name := range flag.Args() {
+		for _, name := range cyFlag.Args {
 			if !hasSuffixName(name) {
 				name += config.DefaultSuffix
 			}
@@ -124,28 +134,28 @@ func main() {
 			ioutil.WriteFile(workDir+"/"+name, nil, Perm)
 
 			if open {
-				cmd :=exec.Command("cmd","/k","start",workDir+"/"+name)
+				cmd := exec.Command("cmd", "/k", "start", workDir+"/"+name)
 				cmd.Start()
 			}
 		}
-	} else if flag.NArg() > 0 {
-		tempName := flag.Arg(flag.NArg() - 1)
+	} else if len(cyFlag.Args) > 0 {
+		tempName := cyFlag.Args[len(cyFlag.Args)-1]
 		file, err := ioutil.ReadFile(tempDir + "/" + tempName)
 
 		if err != nil {
-			fmt.Println(flag.Args())
+			fmt.Println(cyFlag.Args)
 			fmt.Println("No such templates:", tempName)
 		} else {
-			for i := 0; i < flag.NArg()-1; i++ {
-				name := flag.Arg(i)
+			for i := 0; i < len(cyFlag.Args)-1; i++ {
+				name := cyFlag.Args[i]
 				if !hasSuffixName(name) {
-					name+=config.DefaultSuffix
+					name += config.DefaultSuffix
 				}
 
 				ioutil.WriteFile(workDir+"/"+name, file, Perm)
 
 				if open {
-					cmd :=exec.Command("cmd","/k","start",workDir+"/"+name)
+					cmd := exec.Command("cmd", "/k", "start", workDir+"/"+name)
 					cmd.Start()
 				}
 			}

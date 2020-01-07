@@ -3,10 +3,13 @@
 ## Build
 
 1. Install [Go](https://golang.org/)
-2. Change directory to where cynew exists
-3. Run command
+2. Clone the repo
+> git clone https://github.com/yah01/cynew.git
+3. Change directory to where cynew exists
+> cd cynew
+4. Run command
 > go build
-4. There will be a executable file.
+5. There will be a executable file
 
 ## Usage
 
