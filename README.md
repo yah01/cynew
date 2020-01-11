@@ -5,11 +5,11 @@
 1. Install [Go](https://golang.org/)
 2. Clone the repo
 ```shell
-git clone https://github.com/yah01/cynew.git
+go get github.com/yah01/cynew
 ```
 3. Change directory to where cynew exists
 ```shell
-cd cynew
+cd $GOPATH/src/github.com/yah01/cynew
 ```
 4. Run command
 ```shell
