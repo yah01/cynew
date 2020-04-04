@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/yah01/cyflag"
 	"encoding/json"
 	"fmt"
+	"github.com/yah01/cyflag"
+	. "github.com/yah01/cynew/type"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -15,12 +16,8 @@ type Config struct {
 }
 
 func getSelfPath() string {
-	return os.Args[0][0 : len(os.Args[0])-len("cynew.exe")]
+	return os.Args[0][:len(os.Args[0])-len("cynew.exe")]
 }
-
-const (
-	Perm = 0644
-)
 
 var (
 	help   bool
