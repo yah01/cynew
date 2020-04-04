@@ -72,11 +72,11 @@ func flagProcess() {
 	err := cyflag.Parse()
 
 	if err != nil {
-		cyflag.Usage()
+		cyflag.PrintUsage()
 	}
 
 	if help == true {
-		cyflag.Usage()
+		cyflag.PrintUsage()
 	}
 
 	if list == true {
