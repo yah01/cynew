@@ -20,35 +20,23 @@ func getSelfPath() string {
 }
 
 var (
-	help   bool
-	list   bool
-	create bool
-	open   bool
-	temp   string
-	suffix string
-	add    string
-	info   string
+	helpFlag        bool
+	listFlag        bool
+	addTemplateFlag string
+	deleteFlag      string
+	infoFlag        string
 
-	config Config
-
-	fileDir    = getSelfPath()
-	tempDir    = fileDir + "/templates"
-	workDir, _ = os.Getwd()
-	configPath = fileDir + "/config.json"
+	fileDir     = getSelfPath()
+	templateDir = fileDir + "/templates"
+	workDir, _  = os.Getwd()
 )
 
 func init() {
-	configFile, _ := ioutil.ReadFile(configPath)
-	json.Unmarshal(configFile, &config)
-
-	cyflag.BoolVar(&help, "-h", false, "show help information")
-	cyflag.BoolVar(&list, "-ls", false, "list all template(s)")
-	cyflag.BoolVar(&create, "-c", false, "create file(s) without template")
-	cyflag.BoolVar(&open, "-o", false, "open with OS default program")
-	cyflag.StringVar(&temp, "-t", config.DefaultTemp, "set default template")
-	cyflag.StringVar(&suffix, "-s", config.DefaultSuffix, "set default suffix")
-	cyflag.StringVar(&add, "-a", "", "add *filename* into templates")
-	cyflag.StringVar(&info, "-i", "", "show information of *temp*")
+	cyflag.BoolVar(&helpFlag, "-h", false, "show help information")
+	cyflag.BoolVar(&listFlag, "-ls", false, "list all template(s)")
+	cyflag.StringVar(&addTemplateFlag, "-t", "", "make a template with the file/folder")
+	cyflag.StringVar(&deleteFlag, "-d", "", "delete template")
+	cyflag.StringVar(&infoFlag, "-i", "", "show information of template")
 }
 
 func trimSuffixName(suf string) string {
@@ -71,55 +59,63 @@ func hasSuffixName(suf string) bool {
 func flagProcess() {
 	err := cyflag.Parse()
 
-	if err != nil {
+	if err != nil || helpFlag == true {
 		cyflag.PrintUsage()
 	}
 
-	if help == true {
-		cyflag.PrintUsage()
-	}
-
-	if list == true {
-		dir, _ := ioutil.ReadDir(tempDir)
-
-		for i := 0; i < len(dir); i++ {
-
-			fmt.Println(dir[i].Name())
-		}
-	}
-
-	config.DefaultTemp = temp
-	if suffix == "none" {
-		config.DefaultSuffix = ""
-	} else if config.DefaultSuffix != suffix {
-		config.DefaultSuffix = "." + suffix
-	}
-
-	if add != "" {
-		file, err := ioutil.ReadFile(add)
-		if err != nil {
-			fmt.Println("No such file:", add)
+	if listFlag == true {
+		if dir, err := ioutil.ReadDir(templateDir); err != nil {
+			fmt.Println("error when reading dir: %+v", err)
 		} else {
-			ioutil.WriteFile(tempDir+"/"+trimSuffixName(add), file, Perm)
+			for _, fileInfo := range dir {
+				if !fileInfo.IsDir() {
+					if fileContent, err := ioutil.ReadFile(templateDir + "/" + fileInfo.Name()); err == nil {
+						var template Template
+						if err = json.Unmarshal(fileContent, &template); err == nil {
+							fmt.Println("%v\t%v", template.Name, template.Info)
+						}
+					}
+				}
+			}
 		}
 	}
 
-	if info != "" {
+	if addTemplateFlag != "" {
+		var(
+			file []byte
+			folder []os.FileInfo
+		)
+		file, err := ioutil.ReadFile(addTemplateFlag)
+		if err != nil {
+			folder,err = ioutil.ReadDir(addTemplateFlag)
+		}
+		if err != nil {
+			fmt.Println("Read file/folder error: %v", addTemplateFlag)
+		} else {
+			if file != nil {
+
+			}
+			ioutil.WriteFile(templateDir+"/"+trimSuffixName(addFlag), file, Perm)
+		}
+	}
+
+	if deleteFlag != "" {
 
 	}
 
-	JSON, _ := json.Marshal(&config)
-	ioutil.WriteFile(configPath, JSON, Perm)
+	if infoFlag != "" {
+
+	}
 }
 
 func main() {
 	flagProcess()
 
 	if len(cyflag.Args) == 1 {
-		create = true
+		createFlag = true
 	}
 
-	if create == true {
+	if createFlag == true {
 		for _, name := range cyflag.Args {
 			if !hasSuffixName(name) {
 				name += config.DefaultSuffix
@@ -127,14 +123,14 @@ func main() {
 
 			ioutil.WriteFile(workDir+"/"+name, nil, Perm)
 
-			if open {
+			if openFlag {
 				cmd := exec.Command("cmd", "/k", "start", workDir+"/"+name)
 				cmd.Start()
 			}
 		}
 	} else if len(cyflag.Args) > 0 {
 		tempName := cyflag.Args[len(cyflag.Args)-1]
-		file, err := ioutil.ReadFile(tempDir + "/" + tempName)
+		file, err := ioutil.ReadFile(templateDir + "/" + tempName)
 
 		if err != nil {
 			fmt.Println(cyflag.Args)
@@ -148,7 +144,7 @@ func main() {
 
 				ioutil.WriteFile(workDir+"/"+name, file, Perm)
 
-				if open {
+				if openFlag {
 					cmd := exec.Command("cmd", "/k", "start", workDir+"/"+name)
 					cmd.Start()
 				}

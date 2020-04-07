@@ -3,6 +3,8 @@ package cynew
 type rootType string
 
 type Template struct {
+	Name    string
+	Info    string
 	Folders []Folder `json:"folders"`
 	Files   []File   `json:"files"`
 }
