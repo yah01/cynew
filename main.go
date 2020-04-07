@@ -7,7 +7,6 @@ import (
 	. "github.com/yah01/cynew/type"
 	"io/ioutil"
 	"os"
-	"os/exec"
 )
 
 type Config struct {
@@ -56,6 +55,7 @@ func hasSuffixName(suf string) bool {
 	return suf != trimSuffixName(suf)
 }
 
+// Parse flags and execute what the flags mean
 func flagProcess() {
 	err := cyflag.Parse()
 
@@ -65,14 +65,14 @@ func flagProcess() {
 
 	if listFlag == true {
 		if dir, err := ioutil.ReadDir(templateDir); err != nil {
-			fmt.Println("error when reading dir: %+v", err)
+			fmt.Println("reading dir error:", err)
 		} else {
 			for _, fileInfo := range dir {
 				if !fileInfo.IsDir() {
 					if fileContent, err := ioutil.ReadFile(templateDir + "/" + fileInfo.Name()); err == nil {
 						var template Template
 						if err = json.Unmarshal(fileContent, &template); err == nil {
-							fmt.Println("%v\t%v", template.Name, template.Info)
+							fmt.Printf("%v\t%v\n", template.Name, template.Info)
 						}
 					}
 				}
@@ -81,30 +81,31 @@ func flagProcess() {
 	}
 
 	if addTemplateFlag != "" {
-		var(
-			file []byte
+		var (
+			file   []byte
 			folder []os.FileInfo
 		)
 		file, err := ioutil.ReadFile(addTemplateFlag)
 		if err != nil {
-			folder,err = ioutil.ReadDir(addTemplateFlag)
+			folder, err = ioutil.ReadDir(addTemplateFlag)
 		}
 		if err != nil {
-			fmt.Println("Read file/folder error: %v", addTemplateFlag)
+			fmt.Println("Read file/folder error:", addTemplateFlag)
 		} else {
 			if file != nil {
-
+				// todo
+			} else if folder != nil {
+				// todo
 			}
-			ioutil.WriteFile(templateDir+"/"+trimSuffixName(addFlag), file, Perm)
 		}
 	}
 
 	if deleteFlag != "" {
-
+		// todo
 	}
 
 	if infoFlag != "" {
-
+		// todo
 	}
 }
 
@@ -112,43 +113,13 @@ func main() {
 	flagProcess()
 
 	if len(cyflag.Args) == 1 {
-		createFlag = true
-	}
+		fileName := cyflag.Args[0]
 
-	if createFlag == true {
-		for _, name := range cyflag.Args {
-			if !hasSuffixName(name) {
-				name += config.DefaultSuffix
-			}
-
-			ioutil.WriteFile(workDir+"/"+name, nil, Perm)
-
-			if openFlag {
-				cmd := exec.Command("cmd", "/k", "start", workDir+"/"+name)
-				cmd.Start()
-			}
-		}
-	} else if len(cyflag.Args) > 0 {
-		tempName := cyflag.Args[len(cyflag.Args)-1]
-		file, err := ioutil.ReadFile(templateDir + "/" + tempName)
-
+		_, err := os.OpenFile(fileName, os.O_CREATE|os.O_RDWR, Perm)
 		if err != nil {
-			fmt.Println(cyflag.Args)
-			fmt.Println("No such templates:", tempName)
-		} else {
-			for i := 0; i < len(cyflag.Args)-1; i++ {
-				name := cyflag.Args[i]
-				if !hasSuffixName(name) {
-					name += config.DefaultSuffix
-				}
-
-				ioutil.WriteFile(workDir+"/"+name, file, Perm)
-
-				if openFlag {
-					cmd := exec.Command("cmd", "/k", "start", workDir+"/"+name)
-					cmd.Start()
-				}
-			}
+			fmt.Println("Can't create file", fileName)
 		}
+	} else {
+
 	}
 }
