@@ -6,6 +6,7 @@ import (
 	"github.com/yah01/cyflag"
 	. "github.com/yah01/cynew/type"
 	"io/ioutil"
+	"log"
 	"os"
 )
 
@@ -21,6 +22,7 @@ func getSelfPath() string {
 var (
 	helpFlag        bool
 	listFlag        bool
+	templateFlag    string
 	addTemplateFlag string
 	deleteFlag      string
 	infoFlag        string
@@ -32,10 +34,11 @@ var (
 
 func init() {
 	cyflag.BoolVar(&helpFlag, "-h", false, "show help information")
-	cyflag.BoolVar(&listFlag, "-ls", false, "list all template(s)")
-	cyflag.StringVar(&addTemplateFlag, "-t", "", "make a template with the file/folder")
-	cyflag.StringVar(&deleteFlag, "-d", "", "delete template")
-	cyflag.StringVar(&infoFlag, "-i", "", "show information of template")
+	cyflag.BoolVar(&listFlag, "-ls", false, "list all templateFlag(s)")
+	cyflag.StringVar(&templateFlag, "-t", "", "create file/folder with templateFlag")
+	cyflag.StringVar(&addTemplateFlag, "-a", "", "make a templateFlag with the file/folder")
+	cyflag.StringVar(&deleteFlag, "-d", "", "delete templateFlag")
+	cyflag.StringVar(&infoFlag, "-i", "", "show information of templateFlag")
 }
 
 func trimSuffixName(suf string) string {
@@ -56,10 +59,15 @@ func hasSuffixName(suf string) bool {
 }
 
 // Parse flags and execute what the flags mean
-func flagProcess() {
+func flagProcess() error {
 	err := cyflag.Parse()
 
-	if err != nil || helpFlag == true {
+	if err != nil {
+		cyflag.PrintUsage()
+		return err
+	}
+
+	if helpFlag {
 		cyflag.PrintUsage()
 	}
 
@@ -69,7 +77,7 @@ func flagProcess() {
 		} else {
 			for _, fileInfo := range dir {
 				if !fileInfo.IsDir() {
-					if fileContent, err := ioutil.ReadFile(templateDir + "/" + fileInfo.Name()); err == nil {
+					if fileContent, err := ioutil.ReadFile(templateDir + Separator + fileInfo.Name()); err == nil {
 						var template Template
 						if err = json.Unmarshal(fileContent, &template); err == nil {
 							fmt.Printf("%v\t%v\n", template.Name, template.Info)
@@ -77,6 +85,12 @@ func flagProcess() {
 					}
 				}
 			}
+		}
+	}
+
+	if templateFlag != "" {
+		if len(cyflag.Args) == 0 {
+			return fmt.Errorf("no file/folder name")
 		}
 	}
 
@@ -101,25 +115,38 @@ func flagProcess() {
 	}
 
 	if deleteFlag != "" {
-		// todo
+		if err := os.Remove(templateDir + Separator + deleteFlag); err != nil {
+			fmt.Println("Delete templateFlag", deleteFlag, "error:", err)
+		}
 	}
 
 	if infoFlag != "" {
-		// todo
+		if fileContent, err := ioutil.ReadFile(templateDir + Separator + infoFlag); err == nil {
+			var template Template
+			if err = json.Unmarshal(fileContent, &template); err == nil {
+				fmt.Printf("%v\t%v\n", template.Name, template.Info)
+			}
+		}
 	}
+
+	return nil
 }
 
 func main() {
-	flagProcess()
+	err := flagProcess()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-	if len(cyflag.Args) == 1 {
-		fileName := cyflag.Args[0]
-
-		_, err := os.OpenFile(fileName, os.O_CREATE|os.O_RDWR, Perm)
-		if err != nil {
-			fmt.Println("Can't create file", fileName)
+	for _, projectName := range cyflag.Args {
+		// Without template
+		if templateFlag == "" {
+			_, err = os.Create(projectName)
+			if err != nil {
+				fmt.Println("Create file", projectName, "error:", err)
+			}
+		} else {
+			// todo
 		}
-	} else {
-
 	}
 }
