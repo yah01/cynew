@@ -2,5 +2,7 @@ github.com/yah01/cyds v0.0.0-20200322140722-a8c2a7023a4a h1:QqbUE4bG9sld28Fwi0tu
 github.com/yah01/cyds v0.0.0-20200322140722-a8c2a7023a4a/go.mod h1:hFR/NSzoGO+5HcJZsuth0LjUWLtJL6ezTA9lNwDWWhQ=
 github.com/yah01/cyds v0.0.0-20200330180802-5bcb72439d81 h1:5NyiV+Mr0qIJMMvuPrxfCNRpQlbbcwtpfXBB1qhVCYo=
 github.com/yah01/cyds v0.0.0-20200330180802-5bcb72439d81/go.mod h1:hFR/NSzoGO+5HcJZsuth0LjUWLtJL6ezTA9lNwDWWhQ=
-github.com/yah01/cyflag v0.0.0-20200404173617-5af6f6ec69d0 h1:UNyM2soNXKMLuQxwKuZk4XclkDGl/5D3rr5O6ufk7u4=
-github.com/yah01/cyflag v0.0.0-20200404173617-5af6f6ec69d0/go.mod h1:X+U9ZNpoZ5VZuu3yvLDsgICLvl7LPXNvoAWmye3NlXY=
+github.com/yah01/cyflag v0.0.0-20200405181251-974e8bee9fad h1:747Oq6hacoN2T5hL8sC4kzTy9xPS9psxSucSTsoD/vM=
+github.com/yah01/cyflag v0.0.0-20200405181251-974e8bee9fad/go.mod h1:X+U9ZNpoZ5VZuu3yvLDsgICLvl7LPXNvoAWmye3NlXY=
+github.com/yah01/cyflag v0.0.0-20200407151145-99750fe05dec h1:9KDNBIX4gQps3RDdRLFlTxnDEYAFkOtzBlTAqGZ56C4=
+github.com/yah01/cyflag v0.0.0-20200407151145-99750fe05dec/go.mod h1:X+U9ZNpoZ5VZuu3yvLDsgICLvl7LPXNvoAWmye3NlXY=
