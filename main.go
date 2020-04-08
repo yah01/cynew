@@ -22,11 +22,11 @@ var (
 
 func init() {
 	cyflag.BoolVar(&helpFlag, "-h", false, "show help information")
-	cyflag.BoolVar(&listFlag, "-ls", false, "list all templateFlag(s)")
-	cyflag.StringVar(&templateFlag, "-t", "", "create file/folder with templateFlag")
-	cyflag.StringVar(&addTemplateFlag, "-a", "", "make a templateFlag with the file/folder")
-	cyflag.StringVar(&deleteFlag, "-d", "", "delete templateFlag")
-	cyflag.StringVar(&infoFlag, "-i", "", "show information of templateFlag")
+	cyflag.BoolVar(&listFlag, "-ls", false, "list all template(s)")
+	cyflag.StringVar(&templateFlag, "-t", "", "create file/folder with template")
+	cyflag.StringVar(&addTemplateFlag, "-a", "", "make a template with the file/folder")
+	cyflag.StringVar(&deleteFlag, "-d", "", "delete template")
+	cyflag.StringVar(&infoFlag, "-i", "", "show information of template")
 }
 
 func trimSuffixName(suf string) string {
@@ -53,13 +53,14 @@ func main() {
 	}
 
 	template := store.ReadTemplateFile(templateFlag)
-	if template.Type == TemplateType_Empty|| template.Type == TemplateType_SingleFile {
+	WaitAllGoroutine.Add(len(cyflag.Args))
+	if template.Type == TemplateType_Empty || template.Type == TemplateType_SingleFile {
 		for _, fileName := range cyflag.Args {
-			store.CreateFile(fileName, template)
+			go store.CreateFile(fileName, template)
 		}
 	} else {
 		for _, dirName := range cyflag.Args {
-			store.CreateDir(dirName, template)
+			go store.CreateDir(dirName, template)
 		}
 	}
 
