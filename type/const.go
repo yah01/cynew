@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	Perm      = 0644
+	Perm      = 0777
 	Separator = string(os.PathSeparator)
 
 	TemplateType_Empty      TemplateType = 0 // for creating a empty file

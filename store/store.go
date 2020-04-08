@@ -10,11 +10,10 @@ import (
 
 func ReadTemplateFile(templateName string) Template {
 	var template Template
-	fileContent, err := ioutil.ReadFile(TemplateDir + Separator + templateName)
+	fileContent, err := ioutil.ReadFile(TemplateDir + Separator + templateName+".json")
 	if err != nil {
 		return Template{}
 	}
-
 	if err = json.Unmarshal(fileContent, &template); err != nil {
 		return Template{}
 	}
@@ -80,13 +79,13 @@ func CreateFileTemplate(fileName string, content []byte) {
 		Folders: nil,
 		Files: []File{
 			{
-				Name:    "",	// Name is unused for template with type TemplateType_SingleFile
+				Name:    "", // Name is unused for template with type TemplateType_SingleFile
 				Content: content,
 			},
 		},
 	}
 
-	templateJson,err := json.Marshal(template)
+	templateJson, err := json.Marshal(template)
 	jsonFile.Write(templateJson)
 	jsonFile.Close()
 }
