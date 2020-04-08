@@ -9,9 +9,9 @@ const (
 	Perm      = 0644
 	Separator = string(os.PathSeparator)
 
-	TemplateType_Empty      TemplateType = 0
-	TemplateType_SingleFile TemplateType = 1
-	TemplateType_Project    TemplateType = 2
+	TemplateType_Empty      TemplateType = 0	// for creating a empty file
+	TemplateType_SingleFile TemplateType = 1	// for creating single file with template
+	TemplateType_Project    TemplateType = 2	// for creating a folder with template
 )
 
 var (

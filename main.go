@@ -58,8 +58,8 @@ func main() {
 			store.CreateFile(fileName, template)
 		}
 	} else {
-		for _, fileName := range cyflag.Args {
-			store.CreateProject(fileName, template)
+		for _, dirName := range cyflag.Args {
+			store.CreateDir(dirName, template)
 		}
 	}
 
