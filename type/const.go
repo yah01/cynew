@@ -15,7 +15,7 @@ const (
 )
 
 var (
-	FileDir     = os.Args[0][:len(os.Args[0])-len("cynew.exe")]
+	FileDir     = os.Args[0][:len(os.Args[0])-len("cynew")]
 	TemplateDir = FileDir + "/templates"
 	WorkDir, _  = os.Getwd()
 
