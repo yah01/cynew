@@ -1,67 +1,75 @@
 # cynew
 
-## Build
+## Installation
+You can install cynew by the way you prefer.
 
-1. Install [Go](https://golang.org/)
-2. Clone the repo
+### Release
+1. Download [cynew](https://github.com/yah01/cynew/releases)
+2. Add cynew into environment variable PATH
+```shell
+export PATH=$PATH:[folder where you install cynew]
+```
+
+### Build
+You need install [Golang](https://golang.org/) first
+1. Clone the repo
 ```shell
 go get github.com/yah01/cynew
 ```
-3. Change directory to where cynew exists
+2. Change directory to where cynew exists
 ```shell
 cd $GOPATH/src/github.com/yah01/cynew
 ```
-4. Run command
+3. Run build command
 ```shell
 go build
 ```
-5. There will be a executable file
+4. There will be a executable file
+5. Add cynew into environment variable PATH
+```shell
+export PATH=$PATH:[folder where you install cynew]
+```
 
 ## Usage
 
-I highly recommend that adding the directory of cynew into environment variable **Path** such that you could run it anywhere.
-
-### simply create a new file named *hello.cpp*
+### simply create a empty file with name *hello.cpp*
 ```shell
 cynew hello.cpp
 ```
 
-### create a new file *hello.cpp* with a template *temp*
+### create more empty files with name *first.go*, *second.json*
 ```shell
-cynew hello.cpp temp
+cynew first.go second.json
 ```
 
-### create more files *file1,file2,...* with the same template *temp*
-```shell
-cynew file1 file2 ... temp
-```
+Examples above are simple and nothing awesome, they can't show power of cynew. You may want to create a file/folder with some contents (what I call *template*), you can indicate a template when you create file/folder, cynew will write the contents what the template saving into the file/folder.
 
-### create more files *file1,file2,...* without any template
+### create file with template
+Maybe you are building a awesome project, and many source code file have some common contents (template my-template):
 ```shell
-cynew -c file1 file2 ...
+cynew awesome.go -t my-template
 ```
+You can create more than one file by just adding more file names
 
-### set the default template to *temp*
-```shell
-cynew -t temp
+### create folder with template
+Maybe you used scaffold what creates a folder with some contents (files,folders,... I would call also it template), cynew is a scaffold creator and builder!
 ```
+cynew my-app -t my-awesome-project
+```
+command above will create a folder with name my-app, and fill it with contents what template my-awesome-project saving.
 
-### set the default suffix to *.cpp*
+### create template with existing file/folder
+Now you know how to create file/folder with template, but where is the template? You can create template with cynew easily
 ```shell
-cynew -s cpp
+cynew -a hello.go
 ```
-
-### list all template(s)
-```shell
-cynew -ls
-```
+This will create a template with content what hello.go has, then cynew will ask you to input a template name (if you input nothing, the template name is the file name). You can create a folder template by the same way.
 
 ## flag
 
+- [-h]: show help information
 - [-ls]: list all template(s)
-- [-c]: create file(s) without template
-- [-t *temp*]: set default template to *temp*
-- [-s *suf*]: set default suffix to *.suf*
-- [-a *filename*]: add *filename* into templates
-- [-i *temp*]: show information of *temp*
-- [-o]: open with OS default program
+- [-t *template*]: create file/folder with template
+- [-a *filename*]: add *filename* into templates (folder is OK)
+- [-d *template*]: delete template
+- [-i *template*]: show information of template
