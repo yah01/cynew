@@ -4,20 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/yah01/cyflag"
+	"github.com/yah01/cynew/store"
 	. "github.com/yah01/cynew/type"
 	"io/ioutil"
 	"log"
 	"os"
 )
-
-type Config struct {
-	DefaultTemp   string `json:"default_temp"`
-	DefaultSuffix string `json:"default_suffix"`
-}
-
-func getSelfPath() string {
-	return os.Args[0][:len(os.Args[0])-len("cynew.exe")]
-}
 
 var (
 	helpFlag        bool
@@ -26,10 +18,6 @@ var (
 	addTemplateFlag string
 	deleteFlag      string
 	infoFlag        string
-
-	fileDir     = getSelfPath()
-	templateDir = fileDir + "/templates"
-	workDir, _  = os.Getwd()
 )
 
 func init() {
@@ -58,6 +46,24 @@ func hasSuffixName(suf string) bool {
 	return suf != trimSuffixName(suf)
 }
 
+func main() {
+	err := flagProcess()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	template := store.ReadTemplateFile(templateFlag)
+	if template.IsEmpty() || template.IsSingleFileTemplate() {
+		for _, fileName := range cyflag.Args {
+			store.CreateFile(fileName, template)
+		}
+	} else {
+		for _, fileName := range cyflag.Args {
+			store.CreateProject(fileName, template)
+		}
+	}
+}
+
 // Parse flags and execute what the flags mean
 func flagProcess() error {
 	err := cyflag.Parse()
@@ -72,12 +78,12 @@ func flagProcess() error {
 	}
 
 	if listFlag == true {
-		if dir, err := ioutil.ReadDir(templateDir); err != nil {
+		if dir, err := ioutil.ReadDir(TemplateDir); err != nil {
 			fmt.Println("reading dir error:", err)
 		} else {
 			for _, fileInfo := range dir {
 				if !fileInfo.IsDir() {
-					if fileContent, err := ioutil.ReadFile(templateDir + Separator + fileInfo.Name()); err == nil {
+					if fileContent, err := ioutil.ReadFile(TemplateDir + Separator + fileInfo.Name()); err == nil {
 						var template Template
 						if err = json.Unmarshal(fileContent, &template); err == nil {
 							fmt.Printf("%v\t%v\n", template.Name, template.Info)
@@ -115,13 +121,13 @@ func flagProcess() error {
 	}
 
 	if deleteFlag != "" {
-		if err := os.Remove(templateDir + Separator + deleteFlag); err != nil {
+		if err := os.Remove(TemplateDir + Separator + deleteFlag); err != nil {
 			fmt.Println("Delete templateFlag", deleteFlag, "error:", err)
 		}
 	}
 
 	if infoFlag != "" {
-		if fileContent, err := ioutil.ReadFile(templateDir + Separator + infoFlag); err == nil {
+		if fileContent, err := ioutil.ReadFile(TemplateDir + Separator + infoFlag); err == nil {
 			var template Template
 			if err = json.Unmarshal(fileContent, &template); err == nil {
 				fmt.Printf("%v\t%v\n", template.Name, template.Info)
@@ -130,23 +136,4 @@ func flagProcess() error {
 	}
 
 	return nil
-}
-
-func main() {
-	err := flagProcess()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	for _, projectName := range cyflag.Args {
-		// Without template
-		if templateFlag == "" {
-			_, err = os.Create(projectName)
-			if err != nil {
-				fmt.Println("Create file", projectName, "error:", err)
-			}
-		} else {
-			// todo
-		}
-	}
 }
