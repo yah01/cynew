@@ -56,11 +56,11 @@ func main() {
 	WaitAllGoroutine.Add(len(cyflag.Args))
 	if template.Type == TemplateType_Empty || template.Type == TemplateType_SingleFile {
 		for _, fileName := range cyflag.Args {
-			go store.CreateFile(fileName, template)
+			go store.CreateFile(WorkDir+Separator+fileName, template)
 		}
 	} else {
 		for _, dirName := range cyflag.Args {
-			go store.CreateDir(dirName, template)
+			go store.CreateDir(WorkDir+Separator+dirName, template)
 		}
 	}
 
@@ -108,6 +108,7 @@ func flagProcess() error {
 			file   []byte
 			folder []os.FileInfo
 		)
+
 		file, err := ioutil.ReadFile(addTemplateFlag)
 		if err != nil {
 			folder, err = ioutil.ReadDir(addTemplateFlag)
@@ -116,9 +117,9 @@ func flagProcess() error {
 			fmt.Println("Read file/folder error:", addTemplateFlag)
 		} else {
 			if file != nil {
-				// todo
+				store.CreateFileTemplate(addTemplateFlag, file)
 			} else if folder != nil {
-				// todo
+				store.CreateFolderTemplate(addTemplateFlag, folder)
 			}
 		}
 	}
