@@ -23,6 +23,8 @@ func ReadTemplateFile(templateName string) Template {
 }
 
 func CreateDir(path string, content TemplateContent) {
+	defer WaitAllGoroutine.Done()
+
 	err := os.Mkdir(path, Perm)
 	if err != nil {
 		fmt.Println("Create dir", path, "error:", err)
@@ -41,6 +43,7 @@ func CreateDir(path string, content TemplateContent) {
 }
 
 func CreateFile(path string,content TemplateContent) {
+	defer WaitAllGoroutine.Done()
 	newFile,_ := os.Create(path)
 	if !content.IsEmpty() {
 		file := content.GetFileList()[0]
