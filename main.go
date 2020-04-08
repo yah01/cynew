@@ -53,7 +53,7 @@ func main() {
 	}
 
 	template := store.ReadTemplateFile(templateFlag)
-	if template.IsEmpty() || template.IsSingleFileTemplate() {
+	if template.Type == TemplateType_Empty|| template.Type == TemplateType_SingleFile {
 		for _, fileName := range cyflag.Args {
 			store.CreateFile(fileName, template)
 		}
@@ -62,6 +62,8 @@ func main() {
 			store.CreateProject(fileName, template)
 		}
 	}
+
+	WaitAllGoroutine.Wait()
 }
 
 // Parse flags and execute what the flags mean
