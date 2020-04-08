@@ -1,10 +1,16 @@
 package cynew
 
-type rootType string
+type TemplateContent interface {
+	GetFolderList() []Folder
+	GetFileList() []File
+	IsEmpty() bool
+}
 
+type TemplateType byte
 type Template struct {
 	Name    string
 	Info    string
+	Type    TemplateType
 	Folders []Folder `json:"folders"`
 	Files   []File   `json:"files"`
 }
