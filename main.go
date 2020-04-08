@@ -27,6 +27,11 @@ func init() {
 	cyflag.StringVar(&addTemplateFlag, "-a", "", "make a template with the file/folder")
 	cyflag.StringVar(&deleteFlag, "-d", "", "delete template")
 	cyflag.StringVar(&infoFlag, "-i", "", "show information of template")
+
+	_,err := ioutil.ReadDir(TemplateDir)
+	if err != nil {
+		os.Mkdir(TemplateDir,Perm)
+	}
 }
 
 func trimSuffixName(suf string) string {
@@ -51,7 +56,6 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	template := store.ReadTemplateFile(templateFlag)
 	WaitAllGoroutine.Add(len(cyflag.Args))
 	if template.Type == TemplateType_Empty || template.Type == TemplateType_SingleFile {
