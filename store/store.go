@@ -6,11 +6,12 @@ import (
 	. "github.com/yah01/cynew/type"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
 func ReadTemplateFile(templateName string) Template {
 	var template Template
-	fileContent, err := ioutil.ReadFile(TemplateDir + Separator + templateName+".json")
+	fileContent, err := ioutil.ReadFile(TemplateDir + Separator + templateName + ".json")
 	if err != nil {
 		return Template{}
 	}
@@ -34,10 +35,15 @@ func CreateDir(path string, content TemplateContent) {
 	files := content.GetFileList()
 	WaitAllGoroutine.Add(len(folders) + len(files))
 	for _, folder := range folders {
-		go CreateDir(path+Separator+folder.Name, folder)
+		go CreateDir(path+Separator+folder.Name, &folder)
 	}
 	for _, file := range files {
-		go file.Create(path + Separator + file.Name)
+		go CreateFile(path+Separator+file.Name, Folder{
+			Folders: nil,
+			Files: []File{
+				file,
+			},
+		})
 	}
 }
 
@@ -51,7 +57,7 @@ func CreateFile(path string, content TemplateContent) {
 	newFile.Close()
 }
 
-func CreateFileTemplate(fileName string, content []byte) {
+func CreateFileTemplate(fileName string) {
 	var (
 		templateName string
 		info         string
@@ -72,6 +78,8 @@ func CreateFileTemplate(fileName string, content []byte) {
 		return
 	}
 
+	content, err := ioutil.ReadFile(WorkDir + Separator + fileName)
+
 	template = Template{
 		Name:    templateName,
 		Info:    info,
@@ -90,6 +98,72 @@ func CreateFileTemplate(fileName string, content []byte) {
 	jsonFile.Close()
 }
 
-func CreateFolderTemplate(folderName string, content []os.FileInfo) {
+func CreateFolderTemplate(folderName string) {
+	var (
+		templateName string
+		info         string
+		template     Template
+		folder       Folder
+	)
 
+	fmt.Print("Template name: ")
+	fmt.Scanln(&templateName)
+	if templateName == "" {
+		templateName = folderName
+	}
+	fmt.Print("Template information (no necessary): ")
+	fmt.Scanln(&info)
+
+	jsonFile, err := os.Create(TemplateDir + Separator + templateName + ".json")
+	if err != nil {
+		fmt.Println("Create template", templateName, "error:", err)
+		return
+	}
+
+	template = Template{
+		Name:    templateName,
+		Info:    info,
+		Type:    TemplateType_Project,
+		Folders: nil,
+		Files:   nil,
+	}
+
+	path := WorkDir + Separator + folderName
+	TransformFolderToTemplate(path, &folder)
+	template.Folders, template.Files = folder.Folders, folder.Files
+	templateJson, err := json.Marshal(template)
+	jsonFile.Write(templateJson)
+	jsonFile.Close()
+}
+
+func TransformFolderToTemplate(path string, folderContent *Folder) {
+
+	dir, err := ioutil.ReadDir(path)
+
+	if err != nil {
+		fmt.Println("Read dir", filepath.Base(path), "error:", err)
+		return
+	}
+
+	for _, file := range dir {
+		if file.IsDir() {
+			folder := Folder{
+				Name:    file.Name(),
+				Folders: nil,
+				Files:   nil,
+			}
+			TransformFolderToTemplate(path+Separator+file.Name(), &folder)
+			folderContent.Folders = append(folderContent.Folders, folder)
+		} else {
+			content, err := ioutil.ReadFile(path + Separator + file.Name())
+			if err != nil {
+				fmt.Println("Read file", file.Name(), "error:", err)
+			}
+			
+			folderContent.Files = append(folderContent.Files, File{
+				Name:    file.Name(),
+				Content: content,
+			})
+		}
+	}
 }
