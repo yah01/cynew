@@ -28,27 +28,10 @@ func init() {
 	cyflag.StringVar(&deleteFlag, "-d", "", "delete template")
 	cyflag.StringVar(&infoFlag, "-i", "", "show information of template")
 
-	_,err := ioutil.ReadDir(TemplateDir)
+	_, err := ioutil.ReadDir(TemplateDir)
 	if err != nil {
-		os.Mkdir(TemplateDir,Perm)
+		os.Mkdir(TemplateDir, Perm)
 	}
-}
-
-func trimSuffixName(suf string) string {
-	name := []byte(suf)
-
-	for i := len(name) - 1; i >= 0; i-- {
-		if name[i] == '.' {
-			name = name[0:i]
-			break
-		}
-	}
-
-	return string(name)
-}
-
-func hasSuffixName(suf string) bool {
-	return suf != trimSuffixName(suf)
 }
 
 func main() {
@@ -69,6 +52,23 @@ func main() {
 	}
 
 	WaitAllGoroutine.Wait()
+}
+
+func trimSuffixName(suf string) string {
+	name := []byte(suf)
+
+	for i := len(name) - 1; i >= 0; i-- {
+		if name[i] == '.' {
+			name = name[0:i]
+			break
+		}
+	}
+
+	return string(name)
+}
+
+func hasSuffixName(suf string) bool {
+	return suf != trimSuffixName(suf)
 }
 
 // Parse flags and execute what the flags mean
@@ -115,15 +115,17 @@ func flagProcess() error {
 
 		file, err := ioutil.ReadFile(addTemplateFlag)
 		if err != nil {
+			file = nil
 			folder, err = ioutil.ReadDir(addTemplateFlag)
 		}
+
 		if err != nil {
 			fmt.Println("Read file/folder error:", addTemplateFlag)
 		} else {
 			if file != nil {
-				store.CreateFileTemplate(addTemplateFlag, file)
+				store.CreateFileTemplate(addTemplateFlag)
 			} else if folder != nil {
-				store.CreateFolderTemplate(addTemplateFlag, folder)
+				store.CreateFolderTemplate(addTemplateFlag)
 			}
 		}
 	}
