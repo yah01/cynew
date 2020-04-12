@@ -77,7 +77,6 @@ func flagProcess() error {
 
 	if err != nil {
 		cyflag.PrintUsage()
-		return err
 	}
 
 	if helpFlag {
@@ -145,5 +144,5 @@ func flagProcess() error {
 		}
 	}
 
-	return nil
+	return err
 }

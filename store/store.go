@@ -159,7 +159,7 @@ func TransformFolderToTemplate(path string, folderContent *Folder) {
 			if err != nil {
 				fmt.Println("Read file", file.Name(), "error:", err)
 			}
-			
+
 			folderContent.Files = append(folderContent.Files, File{
 				Name:    file.Name(),
 				Content: content,
