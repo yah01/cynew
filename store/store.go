@@ -1,8 +1,8 @@
 package store
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/yah01/cybuf-go"
 	. "github.com/yah01/cynew/type"
 	"io/ioutil"
 	"os"
@@ -11,11 +11,11 @@ import (
 
 func ReadTemplateFile(templateName string) Template {
 	var template Template
-	fileContent, err := ioutil.ReadFile(TemplateDir + Separator + templateName + ".json")
+	fileContent, err := ioutil.ReadFile(TemplateDir + Separator + templateName + ".cybuf")
 	if err != nil {
 		return Template{}
 	}
-	if err = json.Unmarshal(fileContent, &template); err != nil {
+	if err = cybuf.Unmarshal(fileContent, &template); err != nil {
 		return Template{}
 	}
 
@@ -72,7 +72,7 @@ func CreateFileTemplate(fileName string) {
 	fmt.Print("Template information (no necessary): ")
 	fmt.Scanln(&info)
 
-	jsonFile, err := os.Create(TemplateDir + Separator + templateName + ".json")
+	cybufFile, err := os.Create(TemplateDir + Separator + templateName + ".cybuf")
 	if err != nil {
 		fmt.Println("Create template", templateName, "error:", err)
 		return
@@ -93,9 +93,13 @@ func CreateFileTemplate(fileName string) {
 		},
 	}
 
-	templateJson, err := json.Marshal(template)
-	jsonFile.Write(templateJson)
-	jsonFile.Close()
+	templateCybuf, err := cybuf.Marshal(template)
+	if err != nil {
+		fmt.Println("Error: %+v", err)
+		return
+	}
+	cybufFile.Write(templateCybuf)
+	cybufFile.Close()
 }
 
 func CreateFolderTemplate(folderName string) {
@@ -114,7 +118,7 @@ func CreateFolderTemplate(folderName string) {
 	fmt.Print("Template information (no necessary): ")
 	fmt.Scanln(&info)
 
-	jsonFile, err := os.Create(TemplateDir + Separator + templateName + ".json")
+	cybufFile, err := os.Create(TemplateDir + Separator + templateName + ".cybuf")
 	if err != nil {
 		fmt.Println("Create template", templateName, "error:", err)
 		return
@@ -131,9 +135,9 @@ func CreateFolderTemplate(folderName string) {
 	path := WorkDir + Separator + folderName
 	TransformFolderToTemplate(path, &folder)
 	template.Folders, template.Files = folder.Folders, folder.Files
-	templateJson, err := json.Marshal(template)
-	jsonFile.Write(templateJson)
-	jsonFile.Close()
+	templateCybuf, err := cybuf.Marshal(template)
+	cybufFile.Write(templateCybuf)
+	cybufFile.Close()
 }
 
 func TransformFolderToTemplate(path string, folderContent *Folder) {

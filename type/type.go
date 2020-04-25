@@ -6,7 +6,7 @@ type TemplateContent interface {
 	IsEmpty() bool
 }
 
-type TemplateType byte
+type TemplateType uint8
 type Template struct {
 	Name    string
 	Info    string

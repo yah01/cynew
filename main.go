@@ -1,8 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/yah01/cybuf-go"
 	"github.com/yah01/cyflag"
 	"github.com/yah01/cynew/store"
 	. "github.com/yah01/cynew/type"
@@ -91,7 +91,7 @@ func flagProcess() error {
 				if !fileInfo.IsDir() {
 					if fileContent, err := ioutil.ReadFile(TemplateDir + Separator + fileInfo.Name()); err == nil {
 						var template Template
-						if err = json.Unmarshal(fileContent, &template); err == nil {
+						if err = cybuf.Unmarshal(fileContent, &template); err == nil {
 							fmt.Printf("%v\t%v\n", template.Name, template.Info)
 						}
 					}
@@ -138,7 +138,7 @@ func flagProcess() error {
 	if infoFlag != "" {
 		if fileContent, err := ioutil.ReadFile(TemplateDir + Separator + infoFlag); err == nil {
 			var template Template
-			if err = json.Unmarshal(fileContent, &template); err == nil {
+			if err = cybuf.Unmarshal(fileContent, &template); err == nil {
 				fmt.Printf("%v\t%v\n", template.Name, template.Info)
 			}
 		}

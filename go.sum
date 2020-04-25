@@ -1,3 +1,17 @@
+github.com/yah01/cybuf-go v0.0.0-20200424141518-46878913d202 h1:IlPIqilXB5YFavOshOzf45Fik9AKsQcbfBv3CJsuhIc=
+github.com/yah01/cybuf-go v0.0.0-20200424141518-46878913d202/go.mod h1:cP6NyahtmU02nUvz1qf0OJQ5baBblN5AA9CLpcH9+HY=
+github.com/yah01/cybuf-go v0.0.0-20200424143420-915da91377fe h1:tIA0blVZcOUYcDfi2lIEYctGwK67tLKKf9q11RCWqN8=
+github.com/yah01/cybuf-go v0.0.0-20200424143420-915da91377fe/go.mod h1:cP6NyahtmU02nUvz1qf0OJQ5baBblN5AA9CLpcH9+HY=
+github.com/yah01/cybuf-go v0.0.0-20200424144727-22c3e31a535f h1:qWcgHYWGVaR4pR3XAkedZHiSxdoAy5qDEx6awQ5VUJ8=
+github.com/yah01/cybuf-go v0.0.0-20200424144727-22c3e31a535f/go.mod h1:cP6NyahtmU02nUvz1qf0OJQ5baBblN5AA9CLpcH9+HY=
+github.com/yah01/cybuf-go v0.0.0-20200424145942-d709a415d079 h1:mlKvd3F/MYTlCjWXIMmKMgZ9+lx8z0NPKZXT75iJaFk=
+github.com/yah01/cybuf-go v0.0.0-20200424145942-d709a415d079/go.mod h1:cP6NyahtmU02nUvz1qf0OJQ5baBblN5AA9CLpcH9+HY=
+github.com/yah01/cybuf-go v0.0.0-20200424150139-26eb16af0288 h1:K2K/chatjorgvdzQIK/LfAPoF9ibPcRYzZR32PXhl5U=
+github.com/yah01/cybuf-go v0.0.0-20200424150139-26eb16af0288/go.mod h1:cP6NyahtmU02nUvz1qf0OJQ5baBblN5AA9CLpcH9+HY=
+github.com/yah01/cybuf-go v0.0.0-20200424150751-aa4699f6805f h1:PZDdykHBzTP8ghHmA0ERm1asSV54YiPdYDk167E5qgo=
+github.com/yah01/cybuf-go v0.0.0-20200424150751-aa4699f6805f/go.mod h1:cP6NyahtmU02nUvz1qf0OJQ5baBblN5AA9CLpcH9+HY=
+github.com/yah01/cybuf-go v0.0.0-20200424151339-d406debf3257 h1:wFb8t4pvje323nRPnUKu7pF4chgdC+/V464jCQOZFfc=
+github.com/yah01/cybuf-go v0.0.0-20200424151339-d406debf3257/go.mod h1:cP6NyahtmU02nUvz1qf0OJQ5baBblN5AA9CLpcH9+HY=
 github.com/yah01/cyds v0.0.0-20200322140722-a8c2a7023a4a h1:QqbUE4bG9sld28Fwi0tuXKlvp+Q3R1YKuKW5/kB82+o=
 github.com/yah01/cyds v0.0.0-20200322140722-a8c2a7023a4a/go.mod h1:hFR/NSzoGO+5HcJZsuth0LjUWLtJL6ezTA9lNwDWWhQ=
 github.com/yah01/cyds v0.0.0-20200330180802-5bcb72439d81 h1:5NyiV+Mr0qIJMMvuPrxfCNRpQlbbcwtpfXBB1qhVCYo=
